@@ -14,7 +14,6 @@ async function Page() {
     pageSize: 20,
   })
 
-  console.log(result)
 
   return (
     <section>
