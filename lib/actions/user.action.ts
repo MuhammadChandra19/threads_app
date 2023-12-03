@@ -16,8 +16,8 @@ type TUpdateUser = {
 }
 
 export async function updateUser({ userId, username, name, bio, image, path}: TUpdateUser): Promise<void> {
-  connectToDB()
   try {
+    connectToDB()
     await User.findOneAndUpdate(
       { id: userId },
       {
@@ -37,5 +37,20 @@ export async function updateUser({ userId, username, name, bio, image, path}: TU
     }
   } catch(err: any) {
     throw new Error(`Failed to create/update user: ${err.message}`)
+  }
+}
+
+export async function fetchUser(userId: string) {
+  try {
+    connectToDB()
+
+    return await User
+      .findOne({ id: userId})
+      // .populate({
+      //   path: 'communities',
+      //   model: Community
+      // })
+  } catch(err: any) {
+    throw new Error( `Failed to fetch user: ${err.message}`)
   }
 }
