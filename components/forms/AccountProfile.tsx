@@ -20,6 +20,8 @@ import { ChangeEvent, useState } from 'react';
 import { Textarea } from '@/components/ui/textarea';
 import { isBase64Image } from '@/lib/utils';
 import { useUploadThing } from '@/lib/uploadthing'
+import { updateUser } from '@/lib/actions/user.action';
+import { usePathname, useRouter } from 'next/navigation'
 
 
 
@@ -38,6 +40,8 @@ interface Props {
 const AccountProfile = ({ user, btnTitle}: Props) => {
   const [files, setFiles] = useState<File[]>([])
   const { startUpload } = useUploadThing("media")
+  const router = useRouter()
+  const pathname = usePathname()
 
   const form = useForm({
     resolver: zodResolver(UserValidationSchema),
@@ -85,7 +89,20 @@ const AccountProfile = ({ user, btnTitle}: Props) => {
       }
     }
 
-    // TODO: Update user profile
+    await updateUser({ 
+      userId: user.id, 
+      username: values.username,
+      bio: values.bio,
+      image: values.profile_photo,
+      name: values.name,
+      path: pathname
+    })
+
+    if(pathname === '/profile/edit') {
+      router.back()
+    } else {
+      router.push('/')
+    }
   }
 
   return (
